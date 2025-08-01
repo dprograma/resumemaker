@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder - Create Professional Resumes</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;500;600;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <i class="fas fa-file-alt" aria-hidden="true"></i>
+                    Resume Builder
+                </h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="saveBtn" aria-label="Toggle auto-save">
+                        <i class="fas fa-save" aria-hidden="true"></i>
+                        Auto-Save: ON
+                    </button>
+                    <button class="btn btn-primary" id="exportBtn" aria-label="Export resume as PDF">
+                        <i class="fas fa-download" aria-hidden="true"></i>
+                        Export PDF
+                    </button>
+<button class="btn btn-danger" id="clearBtn" aria-label="Clear form and start over">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Template Upload Section -->
+            <section class="template-section" id="templateSection">
+                <div class="template-upload-area">
+                    <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="Upload resume template">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt upload-icon" aria-hidden="true"></i>
+                            <h3>Upload Resume Template</h3>
+                            <p>Drag & drop your resume template (PDF or Image) or click to browse</p>
+                            <input type="file" id="templateInput" accept=".pdf,.jpg,.jpeg,.png" hidden>
+                            <button class="btn btn-outline" onclick="document.getElementById('templateInput').click()" tabindex="-1">
+                                Choose File
+                            </button>
+                        </div>
+                    </div>
+                    <div class="template-analysis" id="templateAnalysis" style="display: none;">
+                        <h4>Template Analysis</h4>
+                        <div class="analysis-results">
+                            <div class="analysis-item">
+                                <span class="label">Dimensions:</span>
+                                <span class="value" id="templateDimensions">-</span>
+                            </div>
+                            <div class="analysis-item">
+                                <span class="label">Color Palette:</span>
+                                <div class="color-palette" id="colorPalette"></div>
+                            </div>
+                            <div class="analysis-item">
+                                <span class="label">Fonts Detected:</span>
+                                <span class="value" id="fontsDetected">-</span>
+                            </div>
+                        </div>
+<!-- Template Library Section -->
+            <section class="template-library-section">
+                <h2>Or Choose a Template</h2>
+                <div class="template-library" id="templateLibrary">
+                    <!-- Template cards will be inserted here by JavaScript -->
+                </div>
+            </section>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Editor -->
+            <div class="editor-container">
+                <!-- Form Panel -->
+                <aside class="form-panel">
+                    <div class="form-header">
+                        <h2>Resume Information</h2>
+                        <div class="form-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <span class="progress-text" id="progressText">0% Complete</span>
+                        </div>
+                    </div>
+
+                    <div class="form-sections">
+                        <!-- Personal Information Section -->
+                        <div class="form-section active" data-section="personal">
+                            <div class="section-header" role="button" tabindex="0" aria-expanded="true" aria-controls="personal-content">
+                                <h3><i class="fas fa-user" aria-hidden="true"></i> Personal Information</h3>
+                                <button class="section-toggle" aria-label="Toggle Personal Information section"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="section-content" id="personal-content">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name <span class="sr-only">(required)</span></label>
+                                    <input type="text" id="fullName" name="fullName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="jobTitle">Job Title <span class="sr-only">(required)</span></label>
+                                    <input type="text" id="jobTitle" name="jobTitle" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="email">Email <span class="sr-only">(required)</span></label>
+                                        <input type="email" id="email" name="email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Phone <span class="sr-only">(required)</span></label>
+                                        <input type="tel" id="phone" name="phone" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" id="address" name="address">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profilePhoto">Profile Photo</label>
+                                    <div class="photo-upload">
+                                        <div class="photo-preview" id="photoPreview">
+                                            <i class="fas fa-camera"></i>
+                                            <span>Upload Photo</span>
+                                        </div>
+                                        <input type="file" id="profilePhoto" accept="image/*" hidden>
+                                        <button type="button" class="btn btn-sm" onclick="document.getElementById('profilePhoto').click()">
+                                            Choose Photo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Summary Section -->
+                        <div class="form-section" data-section="summary">
+                            <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="summary-content">
+                                <h3><i class="fas fa-align-left" aria-hidden="true"></i> Professional Summary</h3>
+                                <button class="section-toggle" aria-label="Toggle Professional Summary section"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label for="summary">Executive Summary</label>
+                                    <textarea id="summary" name="summary" rows="4" placeholder="Write a compelling professional summary..."></textarea>
+                                    <div class="char-counter">
+                                        <span id="summaryCount">0</span>/500 characters
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skills Section -->
+                        <div class="form-section" data-section="skills">
+                            <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="skills-content">
+                                <h3><i class="fas fa-cogs" aria-hidden="true"></i> Skills & Competencies</h3>
+                                <button class="section-toggle" aria-label="Toggle Skills & Competencies section"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="section-content">
+                                <div class="skills-container" id="skillsContainer">
+                                    <div class="skill-item">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <input type="text" placeholder="Skill name" class="skill-name">
+                                            </div>
+                                            <div class="form-group skill-level-group">
+                                                <select class="skill-level">
+                                                    <option value="beginner">Beginner</option>
+                                                    <option value="intermediate">Intermediate</option>
+                                                    <option value="advanced">Advanced</option>
+                                                    <option value="expert">Expert</option>
+                                                </select>
+                                            </div>
+                                            <button type="button" class="btn-remove" onclick="removeSkill(this)">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="addSkill()">
+                                    <i class="fas fa-plus"></i> Add Skill
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Experience Section -->
+                        <div class="form-section" data-section="experience">
+                            <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="experience-content">
+                                <h3><i class="fas fa-briefcase" aria-hidden="true"></i> Work Experience</h3>
+                                <button class="section-toggle" aria-label="Toggle Work Experience section"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="section-content">
+                                <div class="experience-container" id="experienceContainer">
+                                    <div class="experience-item">
+                                        <div class="form-group">
+                                            <label>Job Title</label>
+                                            <input type="text" class="job-title" placeholder="e.g. Senior Software Engineer">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Company</label>
+                                            <input type="text" class="company-name" placeholder="Company name">
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Start Date</label>
+                                                <input type="month" class="start-date">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>End Date</label>
+                                                <input type="month" class="end-date">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" class="current-job"> Current Position
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea class="job-description" rows="3" placeholder="Describe your responsibilities and achievements..."></textarea>
+                                        </div>
+                                        <button type="button" class="btn-remove" onclick="removeExperience(this)">
+                                            <i class="fas fa-times"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="addExperience()">
+                                    <i class="fas fa-plus"></i> Add Experience
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Education Section -->
+                        <div class="form-section" data-section="education">
+                            <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="education-content">
+                                <h3><i class="fas fa-graduation-cap" aria-hidden="true"></i> Education</h3>
+                                <button class="section-toggle" aria-label="Toggle Education section"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="section-content">
+                                <div class="education-container" id="educationContainer">
+                                    <div class="education-item">
+                                        <div class="form-group">
+                                            <label>Degree</label>
+                                            <input type="text" class="degree" placeholder="e.g. Bachelor of Science">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Field of Study</label>
+                                            <input type="text" class="field-of-study" placeholder="e.g. Computer Science">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Institution</label>
+                                            <input type="text" class="institution" placeholder="University name">
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Graduation Year</label>
+                                                <input type="number" class="graduation-year" min="1950" max="2030">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>GPA (Optional)</label>
+                                                <input type="text" class="gpa" placeholder="3.8/4.0">
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn-remove" onclick="removeEducation(this)">
+                                            <i class="fas fa-times"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="addEducation()">
+                                    <i class="fas fa-plus"></i> Add Education
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Certifications Section -->
+                        <div class="form-section" data-section="certifications">
+                            <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="certifications-content">
+                                <h3><i class="fas fa-certificate" aria-hidden="true"></i> Certifications</h3>
+                                <button class="section-toggle" aria-label="Toggle Certifications section"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="section-content">
+                                <div class="certifications-container" id="certificationsContainer">
+                                    <div class="certification-item">
+                                        <div class="form-group">
+                                            <label>Certification Name</label>
+                                            <input type="text" class="cert-name" placeholder="e.g. AWS Certified Solutions Architect">
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Issuing Organization</label>
+                                                <input type="text" class="cert-issuer" placeholder="e.g. Amazon Web Services">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Date Obtained</label>
+                                                <input type="month" class="cert-date">
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn-remove" onclick="removeCertification(this)">
+                                            <i class="fas fa-times"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="addCertification()">
+                                    <i class="fas fa-plus"></i> Add Certification
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Projects Section -->
+                        <div class="form-section" data-section="projects">
+                            <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="projects-content">
+                                <h3><i class="fas fa-project-diagram" aria-hidden="true"></i> Projects</h3>
+                                <button class="section-toggle" aria-label="Toggle Projects section"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="section-content">
+                                <div class="projects-container" id="projectsContainer">
+                                    <div class="project-item">
+                                        <div class="form-group">
+                                            <label>Project Name</label>
+                                            <input type="text" class="project-name" placeholder="e.g. My Awesome App">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea class="project-description" rows="3" placeholder="Describe your project..."></textarea>
+                                        </div>
+                                        <button type="button" class="btn-remove" onclick="removeProject(this)">
+                                            <i class="fas fa-times"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="addProject()">
+                                    <i class="fas fa-plus"></i> Add Project
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Additional Sections -->
+                        <div class="form-section" data-section="additional">
+                            <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="additional-content">
+                                <h3><i class="fas fa-plus-circle" aria-hidden="true"></i> Additional Information</h3>
+                                <button class="section-toggle" aria-label="Toggle Additional Information section"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label for="languages">Languages</label>
+                                    <textarea id="languages" name="languages" rows="2" placeholder="e.g. English (Native), Spanish (Fluent), French (Conversational)"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="interests">Interests & Hobbies</label>
+                                    <textarea id="interests" name="interests" rows="2" placeholder="e.g. Photography, Hiking, Open Source Contributions"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="references">References</label>
+                                    <textarea id="references" name="references" rows="3" placeholder="Available upon request or provide specific references"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Preview Panel -->
+                <section class="preview-panel">
+                    <div class="preview-header">
+                        <h2>Live Preview</h2>
+                        <div class="preview-controls">
+                            <button class="btn btn-sm" id="zoomOut"><i class="fas fa-search-minus"></i></button>
+                            <span class="zoom-level" id="zoomLevel">100%</span>
+                            <button class="btn btn-sm" id="zoomIn"><i class="fas fa-search-plus"></i></button>
+                            <button class="btn btn-sm" id="fitToWidth"><i class="fas fa-expand-arrows-alt"></i></button>
+                        </div>
+                    </div>
+                    <div class="preview-container">
+                        <div class="resume-preview" id="resumePreview">
+                            <div class="resume-page">
+                                <div class="resume-content">
+                                    <!-- Dynamic resume content will be generated here -->
+                                    <div class="preview-placeholder">
+                                        <i class="fas fa-file-alt"></i>
+                                        <h3>Your resume will appear here</h3>
+                                        <p>Start filling out the form to see your resume come to life</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p>Processing template...</p>
+            </div>
+        </div>
+
+        <!-- Photo Crop Modal -->
+        <div class="modal" id="photoCropModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Crop Profile Photo</h3>
+                    <button class="modal-close" onclick="closeCropModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="crop-container">
+                        <img id="cropCanvas" style="max-width: 100%;">
+                    </div>
+                    <div class="crop-controls">
+                        <button class="btn btn-secondary" onclick="closeCropModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="applyCrop()">Apply Crop</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="js/template-analyzer.js"></script>
+    <script src="js/form-handler.js"></script>
+    <script src="js/preview-engine.js"></script>
+    <script src="js/pdf-generator.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+<script src="js/template-library.js"></script>
