@@ -47,8 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 height: element.scrollHeight,
                 width: element.scrollWidth
             },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
 
         html2pdf().from(element).set(opt).save().then(() => {

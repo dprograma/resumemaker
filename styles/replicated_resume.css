@@ -280,7 +280,7 @@ body {
 }
 /* Right Column Specific Styling */
 .right-column .section {
-    margin-bottom: 28px;
+    margin-bottom: 18px;
 }
 .right-column p {
     font-size: 10pt;
@@ -591,10 +591,8 @@ body {
     
     /* Prevent orphaned content */
     h1, h2, h3, .section-title {
-        page-break-after: avoid;
     }
     
     .job-title, .company {
-        page-break-after: avoid;
     }
 }
