@@ -8,24 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const placeholder = document.getElementById('profile-image-placeholder');
     const removeProfileImage = document.getElementById('remove-profile-image');
 
-    function createFooter() {
-        const footer = document.createElement('div');
-        footer.style.cssText = `
-            width: 100%;
-            text-align: center;
-            font-size: 8pt;
-            color: #7f8c8d;
-            padding-top: 5px;
-            margin-top: 20px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin-bottom: 0.5in;
-        `;
-        return footer;
-    }
-
     function setEditable(isEditable) {
         const allEditableElements = resume.querySelectorAll('[contenteditable]');
         allEditableElements.forEach(el => {
@@ -46,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     downloadBtn.addEventListener('click', () => {
-        // Temporarily disable edit mode for clean PDF
         const wasInEditMode = resume.classList.contains('edit-mode');
         if (wasInEditMode) {
             setEditable(false);
@@ -54,24 +35,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const element = document.getElementById('resume');
         const opt = {
-            margin: [0.3, 0.3, 0.5, 0.3],
+            margin: [0.5, 0.5, 0.5, 0.5],
             filename: 'Kennedy_Egwuda_Resume.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
-                scale: 3, 
+                scale: 2, 
                 useCORS: true, 
-                logging: false,
+                logging: true,
                 backgroundColor: '#ffffff',
-                allowTaint: false,
+                allowTaint: true,
                 height: element.scrollHeight,
                 width: element.scrollWidth
             },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait', putOnlyUsedFonts: true }
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
-        element.appendChild(createFooter());
+
         html2pdf().from(element).set(opt).save().then(() => {
-            element.removeChild(element.lastChild);
-            // Re-enable edit mode if it was on
             if (wasInEditMode) {
                 setEditable(true);
             }
@@ -94,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 profileImage.style.display = 'block';
                 placeholder.style.display = 'none';
                 removeProfileImage.style.display = 'block';
-                // Add has-image class for PDF styling
                 photoPreview.classList.add('has-image');
             };
             reader.readAsDataURL(file);
@@ -108,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
         placeholder.style.display = 'block';
         removeProfileImage.style.display = 'none';
         photoUpload.value = '';
-        // Remove has-image class for PDF styling
         photoPreview.classList.remove('has-image');
     });
 
@@ -190,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
         removeBtn.onclick = () => item.remove();
         item.appendChild(removeBtn);
 
-        // Make new elements editable if in edit mode
         if (isEditable) {
             item.querySelectorAll('[contenteditable]').forEach(el => el.setAttribute('contenteditable', 'true'));
         }
@@ -208,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (editModeCheckbox.checked) {
                 e.preventDefault();
                 
-                // Create input field
                 const input = document.createElement('input');
                 input.type = 'url';
                 input.value = linkElement.href;
@@ -222,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     font-family: inherit;
                 `;
                 
-                // Replace link with input
                 const originalText = linkElement.innerHTML;
                 linkElement.style.display = 'none';
                 linkElement.parentNode.insertBefore(input, linkElement);
@@ -253,11 +228,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize link editors
     createLinkEditor(githubLink, 'https://github.com/username');
     createLinkEditor(linkedinLink, 'https://linkedin.com/in/username');
     createLinkEditor(portfolioLink, 'https://portfolio-url.com');
 
-    // Initial state
     setEditable(false);
 });

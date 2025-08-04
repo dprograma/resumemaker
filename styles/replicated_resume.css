@@ -182,6 +182,7 @@ body {
 .section {
     margin-bottom: 32px;
     position: relative;
+    page-break-before: auto;
 }
 .section:last-child {
     margin-bottom: 0;
@@ -416,6 +417,7 @@ body {
     /* Additional specific hiding for remove buttons */
     button.btn-remove {
         display: none !important;
+        background: none !important;
     }
     
     /* Hide profile image placeholder only when no image is present */
