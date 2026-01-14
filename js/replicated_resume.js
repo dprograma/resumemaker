@@ -17,9 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isEditable) {
             resume.classList.add('edit-mode');
             downloadBtn.style.display = 'inline-block';
+            updateRemoveButtonVisibility();
         } else {
             resume.classList.remove('edit-mode');
             downloadBtn.style.display = 'none';
+            removeProfileImage.style.display = 'none';
         }
     }
 
@@ -34,23 +36,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const element = document.getElementById('resume');
+
+        // Get computed width to maintain content width
+        const computedStyle = window.getComputedStyle(element);
+        const contentWidth = element.offsetWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight);
+
+        // Hide placeholder and header-right if no image
+        const hasImage = photoPreview.classList.contains('has-image');
+        const originalPlaceholderDisplay = placeholder.style.display;
+        const originalHeaderRightDisplay = document.querySelector('.header-right').style.display;
+
+        if (!hasImage) {
+            placeholder.style.display = 'none';
+            document.querySelector('.header-right').style.display = 'none';
+        } else {
+            placeholder.style.display = 'none'; // Always hide placeholder in PDF
+        }
+
+        // Temporarily adjust for PDF generation
+        const originalPadding = element.style.padding;
+        const originalWidth = element.style.width;
+        element.style.padding = '0';
+        element.style.width = contentWidth + 'px';
+
         const opt = {
-            margin: [0.5, 0.5, 0.5, 0.5],
+            margin: [15, 15, 15, 15], // 15mm margins on all sides for each page
             filename: 'Kennedy_Egwuda_Resume.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true, 
-                logging: true,
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                logging: false,
                 backgroundColor: '#ffffff',
                 allowTaint: true,
-                height: element.scrollHeight,
-                width: element.scrollWidth
+                scrollY: 0,
+                scrollX: 0
             },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            jsPDF: {
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait',
+                compress: true
+            },
+            pagebreak: {
+                mode: ['avoid-all', 'css', 'legacy'],
+                before: '.page-break-before',
+                after: '.page-break-after',
+                avoid: ['.job', '.section', '.header']
+            },
+            enableLinks: true
         };
 
         html2pdf().from(element).set(opt).save().then(() => {
+            // Restore original styles
+            element.style.padding = originalPadding;
+            element.style.width = originalWidth;
+            placeholder.style.display = originalPlaceholderDisplay;
+            document.querySelector('.header-right').style.display = originalHeaderRightDisplay;
+
             if (wasInEditMode) {
                 setEditable(true);
             }
@@ -72,7 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 profileImage.src = event.target.result;
                 profileImage.style.display = 'block';
                 placeholder.style.display = 'none';
-                removeProfileImage.style.display = 'block';
+                if (editModeCheckbox.checked) {
+                    removeProfileImage.style.display = 'block';
+                }
                 photoPreview.classList.add('has-image');
             };
             reader.readAsDataURL(file);
@@ -88,6 +133,15 @@ document.addEventListener('DOMContentLoaded', () => {
         photoUpload.value = '';
         photoPreview.classList.remove('has-image');
     });
+
+    // Update remove button visibility based on edit mode
+    function updateRemoveButtonVisibility() {
+        if (editModeCheckbox.checked && profileImage.style.display === 'block') {
+            removeProfileImage.style.display = 'block';
+        } else {
+            removeProfileImage.style.display = 'none';
+        }
+    }
 
 
     // --- Dynamic Sections ---
@@ -163,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         item.innerHTML = content;
         const removeBtn = document.createElement('button');
         removeBtn.className = 'btn-remove';
-        removeBtn.innerHTML = '×';
+        removeBtn.innerHTML = 'Remove';
         removeBtn.onclick = () => item.remove();
         item.appendChild(removeBtn);
 
