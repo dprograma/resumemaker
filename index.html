@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Resume Builder</title>
     <link rel="stylesheet" href="styles/replicated_resume.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/form-interface.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,10 +14,188 @@
 </head>
 <body>
     <div class="controls">
-        <label for="editMode">Edit Mode</label>
-        <input type="checkbox" id="editMode">
-        <button id="downloadBtn" style="display:none;">Download PDF</button>
+        <label for="modeToggle">Mode:</label>
+        <select id="modeToggle">
+            <option value="preview">Preview Only</option>
+            <option value="form">Form Editor</option>
+            <option value="direct">Direct Edit</option>
+        </select>
+        <button id="downloadBtn" style="display:inline-block;">Download PDF</button>
     </div>
+
+    <!-- Form Editor Panel (Hidden by default) -->
+    <div id="formEditorPanel" class="editor-container" style="display:none; padding: 20px;">
+        <div class="form-panel">
+            <div class="form-header">
+                <h2>Edit Resume</h2>
+                <div class="form-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+            </div>
+
+            <div class="form-sections">
+                <!-- Personal Information Section -->
+                <div class="form-section active">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        <button class="section-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="jobTitle">Job Title *</label>
+                            <input type="text" id="jobTitle" placeholder="Senior Software Engineer">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" placeholder="john@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" placeholder="+1234567890">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" placeholder="City, State, Country">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="github">GitHub URL</label>
+                                <input type="url" id="github" placeholder="https://github.com/username">
+                            </div>
+                            <div class="form-group">
+                                <label for="linkedin">LinkedIn URL</label>
+                                <input type="url" id="linkedin" placeholder="https://linkedin.com/in/username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="portfolio">Portfolio URL</label>
+                            <input type="url" id="portfolio" placeholder="https://yourportfolio.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Section -->
+                <div class="form-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3><i class="fas fa-align-left"></i> Professional Summary</h3>
+                        <button class="section-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label for="summary">Summary</label>
+                            <textarea id="summary" rows="4" placeholder="Brief professional summary highlighting your key achievements and skills..."></textarea>
+                            <div class="char-counter"><span id="summaryCount">0</span>/500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                <div class="form-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3><i class="fas fa-code"></i> Skills</h3>
+                        <button class="section-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Add Skills (Type and press Enter)</label>
+                            <div id="skillsTagsContainer" class="skills-tags-container" style="min-height: 100px; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px;">
+                                <input type="text" id="skillInput" placeholder="Type a skill and press Enter..." style="border: none; outline: none; width: 100%; padding: 4px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Experience Section -->
+                <div class="form-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3><i class="fas fa-briefcase"></i> Work Experience</h3>
+                        <button class="section-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <div style="background: #eff6ff; border-left: 3px solid #2563eb; padding: 12px; margin-bottom: 16px; border-radius: 4px; font-size: 13px;">
+                            <strong style="color: #1e40af; display: block; margin-bottom: 4px;">💡 Quick Tip:</strong>
+                            <span style="color: #1e3a8a;">In the Description field, press <strong>Enter</strong> to create a new line. Each line becomes a separate bullet point in your resume.</span>
+                        </div>
+                        <div id="experienceItemsContainer"></div>
+                        <button type="button" class="btn btn-outline" onclick="addExperienceFormItem()" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-plus"></i> Add Experience
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Education Section -->
+                <div class="form-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+                        <button class="section-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <div id="educationItemsContainer"></div>
+                        <button type="button" class="btn btn-outline" onclick="addEducationFormItem()" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-plus"></i> Add Education
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Projects Section -->
+                <div class="form-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3><i class="fas fa-project-diagram"></i> Projects</h3>
+                        <button class="section-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <div style="background: #eff6ff; border-left: 3px solid #2563eb; padding: 12px; margin-bottom: 16px; border-radius: 4px; font-size: 13px;">
+                            <strong style="color: #1e40af; display: block; margin-bottom: 4px;">💡 Quick Tip:</strong>
+                            <span style="color: #1e3a8a;">In the Description field, each new line becomes a bullet point. Describe what you built, technologies used, and impact.</span>
+                        </div>
+                        <div id="projectsItemsContainer"></div>
+                        <button type="button" class="btn btn-outline" onclick="addProjectFormItem()" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-plus"></i> Add Project
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Additional Sections -->
+                <div class="form-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3><i class="fas fa-plus-circle"></i> Additional Information</h3>
+                        <button class="section-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label for="strengths">Strengths</label>
+                            <textarea id="strengths" rows="2" placeholder="Your key strengths..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="achievements">Key Achievements</label>
+                            <textarea id="achievements" rows="2" placeholder="Your notable achievements..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="languages">Languages</label>
+                            <textarea id="languages" rows="2" placeholder="English (Fluent), Spanish (Intermediate)"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel-wrapper">
+            <div class="preview-container" style="background: #f1f5f9; padding: 20px; border-radius: 8px; max-height: 90vh; overflow-y: auto;">
+                <div id="resumePreview"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="container" id="resume">
         <div class="header">
             <div class="header-left">
@@ -166,5 +346,6 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
     <script src="js/replicated_resume.js"></script>
+    <script src="js/form-interface.js"></script>
 </body>
 </html>

@@ -1,0 +1,218 @@
+/* Form Interface Specific Styles */
+
+.editor-container {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.form-panel {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+}
+
+.preview-panel-wrapper {
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+}
+
+/* Skills Tags Container */
+.skills-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
+
+.skill-tag {
+    display: inline-block;
+    background: #3498db;
+    color: white;
+    padding: 4px 10px;
+    margin: 4px;
+    border-radius: 4px;
+    font-size: 11pt;
+}
+
+.skill-tag span {
+    cursor: pointer;
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+.skill-tag span:hover {
+    color: #ff0000;
+}
+
+/* Section Toggle Animation */
+.section-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.form-section.active .section-toggle i {
+    transform: rotate(180deg);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+    .editor-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .form-panel {
+        max-height: 600px;
+    }
+
+    .preview-panel-wrapper {
+        max-height: 800px;
+    }
+}
+
+/* Resume Preview Scaling */
+#resumePreview {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#resumePreview > .container,
+#resumePreview > #resumePreviewClone {
+    transform: scale(0.65);
+    transform-origin: top center;
+    margin: 0 auto;
+    display: block !important;
+}
+
+@media (max-width: 1400px) {
+    #resumePreview > .container,
+    #resumePreview > #resumePreviewClone {
+        transform: scale(0.55);
+    }
+}
+
+@media (max-width: 1000px) {
+    #resumePreview > .container,
+    #resumePreview > #resumePreviewClone {
+        transform: scale(0.45);
+    }
+}
+
+/* Controls Panel Styling */
+.controls {
+    background: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.controls label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.controls select {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.controls select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.controls button {
+    padding: 8px 16px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-left: auto;
+}
+
+.controls button:hover {
+    background: #1d4ed8;
+}
+
+/* Form Input Styling Enhancements */
+.form-group input:hover,
+.form-group textarea:hover,
+.form-group select:hover {
+    border-color: #94a3b8;
+}
+
+/* Progress Bar Animations */
+.progress-fill {
+    transition: width 0.5s ease-in-out;
+}
+
+/* Empty State for Containers */
+#experienceItemsContainer:empty::before,
+#educationItemsContainer:empty::before,
+#projectsItemsContainer:empty::before {
+    content: "No items added yet. Click the button below to add.";
+    display: block;
+    text-align: center;
+    padding: 20px;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* Smooth Transitions */
+.form-section,
+.section-content {
+    transition: all 0.3s ease;
+}
+
+/* Helper text styling */
+.form-group small {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #64748b;
+    font-style: italic;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-group label .info-icon {
+    font-size: 14px;
+    color: #94a3b8;
+    cursor: help;
+}
+
+/* Button Hover Effects */
+.btn-outline {
+    transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
