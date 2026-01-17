@@ -147,12 +147,13 @@ body {
     letter-spacing: 0.5px;
 }
 .contact-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px 20px;
     font-size: 10pt;
     color: #34495e;
     margin-top: 10px;
+    width: 100%;
 }
 .contact-info span {
     display: flex;
@@ -168,8 +169,8 @@ body {
 
 /* Social Links Styling */
 #social-links {
-    grid-column: span 2;
-    text-align: center;
+    width: 100%;
+    flex-basis: 100%;
 }
 
 #social-links a {

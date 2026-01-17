@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const editModeCheckbox = document.getElementById('editMode');
+    const modeToggle = document.getElementById('modeToggle');
     const downloadBtn = document.getElementById('downloadBtn');
     const resume = document.getElementById('resume');
     const photoUpload = document.getElementById('profile-image-upload');
@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileImage = document.getElementById('profile-image');
     const placeholder = document.getElementById('profile-image-placeholder');
     const removeProfileImage = document.getElementById('remove-profile-image');
+
+    function isDirectEditMode() {
+        return modeToggle && modeToggle.value === 'direct';
+    }
 
     function setEditable(isEditable) {
         const allEditableElements = resume.querySelectorAll('[contenteditable]');
@@ -16,18 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isEditable) {
             resume.classList.add('edit-mode');
-            downloadBtn.style.display = 'inline-block';
             updateRemoveButtonVisibility();
         } else {
             resume.classList.remove('edit-mode');
-            downloadBtn.style.display = 'none';
             removeProfileImage.style.display = 'none';
         }
     }
 
-    editModeCheckbox.addEventListener('change', (e) => {
-        setEditable(e.target.checked);
-    });
+    if (modeToggle) {
+        modeToggle.addEventListener('change', (e) => {
+            setEditable(e.target.value === 'direct');
+        });
+    }
 
     downloadBtn.addEventListener('click', () => {
         const wasInEditMode = resume.classList.contains('edit-mode');
@@ -102,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Profile Image Handling ---
     photoPreview.addEventListener('click', () => {
-        if (editModeCheckbox.checked) {
+        if (isDirectEditMode()) {
             photoUpload.click();
         }
     });
@@ -115,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 profileImage.src = event.target.result;
                 profileImage.style.display = 'block';
                 placeholder.style.display = 'none';
-                if (editModeCheckbox.checked) {
+                if (isDirectEditMode()) {
                     removeProfileImage.style.display = 'block';
                 }
                 photoPreview.classList.add('has-image');
@@ -136,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update remove button visibility based on edit mode
     function updateRemoveButtonVisibility() {
-        if (editModeCheckbox.checked && profileImage.style.display === 'block') {
+        if (isDirectEditMode() && profileImage.style.display === 'block') {
             removeProfileImage.style.display = 'block';
         } else {
             removeProfileImage.style.display = 'none';
@@ -172,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createNewItem(className, type) {
         const item = document.createElement('div');
         item.className = className;
-        const isEditable = editModeCheckbox.checked;
+        const isEditable = isDirectEditMode();
 
         let content = '';
         switch(type) {
@@ -233,9 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const linkedinLink = document.getElementById('linkedin-link');
     const portfolioLink = document.getElementById('portfolio-link');
 
-    function createLinkEditor(linkElement, defaultUrl) {
+    function createLinkEditor(linkElement) {
         linkElement.addEventListener('click', (e) => {
-            if (editModeCheckbox.checked) {
+            if (isDirectEditMode()) {
                 e.preventDefault();
                 
                 const input = document.createElement('input');
@@ -251,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     font-family: inherit;
                 `;
                 
-                const originalText = linkElement.innerHTML;
                 linkElement.style.display = 'none';
                 linkElement.parentNode.insertBefore(input, linkElement);
                 
@@ -281,9 +284,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    createLinkEditor(githubLink, 'https://github.com/username');
-    createLinkEditor(linkedinLink, 'https://linkedin.com/in/username');
-    createLinkEditor(portfolioLink, 'https://portfolio-url.com');
+    createLinkEditor(githubLink);
+    createLinkEditor(linkedinLink);
+    createLinkEditor(portfolioLink);
 
     setEditable(false);
 });
